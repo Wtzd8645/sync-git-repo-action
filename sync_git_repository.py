@@ -13,6 +13,7 @@ def sync_git_repository():
     git_access_token = os.getenv('git_access_token')
     git_repo_name = os.getenv('git_repo_name')
     git_branch = os.getenv('git_branch')
+    enable_git_lfs = os.getenv('enable_git_lfs') == 'true'
 
     if git_access_token:
         repo_url = f"https://{git_access_token}@github.com/{git_repo_name}.git"
@@ -41,8 +42,13 @@ def sync_git_repository():
             else:
                 print("Checking out the branch.")
                 run_command(f'git checkout "{git_branch}"')
+    
+    print("Syncing with remote branch.")
+    run_command(f'git reset --hard "origin/{git_branch}"')
 
-        print("Syncing with remote branch.")
-        run_command(f'git reset --hard "origin/{git_branch}"')
+    if enable_git_lfs:
+        print("Update LFS files.")
+        run_command('git lfs install')
+        run_command('git lfs pull')
 
 sync_git_repository()

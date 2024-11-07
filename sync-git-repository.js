@@ -19,6 +19,7 @@ function syncGitRepository() {
   const gitAccessToken = process.env.git_access_token;
   const gitRepoName = process.env.git_repo_name;
   const gitBranch = process.env.git_branch;
+  const enableGitLfs = process.env.enable_git_lfs === 'true';
 
   const repoUrl = gitAccessToken 
       ? `https://${gitAccessToken}@github.com/${gitRepoName}.git` 
@@ -51,6 +52,12 @@ function syncGitRepository() {
 
     console.log("Syncing with remote branch.");
     runCommand(`git reset --hard "origin/${gitBranch}"`);
+
+    if (enableGitLfs) {
+      console.log("Update LFS files.");
+      runCommand("git lfs install");
+      runCommand("git lfs pull");
+    }
   }
 }
 

@@ -4,17 +4,20 @@ author: "Neo Chen"
 
 inputs:
   language:
-    description: "Choose the scripting language to use for updating the repository"
+    description: "Scripting Language"
     default: "javascript"
   git_access_token:
-    description: "Git access token for authentication"
+    description: "Git Access Token for Authentication"
     required: true
   git_repo_name:
-    description: "Repository to sync"
+    description: "Repository Name"
     required: true
   git_branch:
-    description: "Branch to sync"
+    description: "Branch Name"
     required: true
+  enable_git_lfs:
+    description: Is enable Git LFS
+    default: "false"
 
 runs:
   using: "composite"
@@ -37,6 +40,7 @@ runs:
         git_access_token: ${{ inputs.git_access_token }}
         git_repo_name: ${{ inputs.git_repo_name }}
         git_branch: ${{ inputs.git_branch }}
+        enable_git_lfs: ${{ inputs.enable_git_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: node ${{ github.action_path }}/sync-git-repository.js
     
@@ -46,5 +50,6 @@ runs:
         git_access_token: ${{ inputs.git_access_token }}
         git_repo_name: ${{ inputs.git_repo_name }}
         git_branch: ${{ inputs.git_branch }}
+        enable_git_lfs: ${{ inputs.enable_git_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: python ${{ github.action_path }}/sync_git_repository.py
