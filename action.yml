@@ -1,0 +1,50 @@
+name: "Sync Git Repository Action"
+description: "Sync a Git repository using script"
+author: "Neo Chen"
+
+inputs:
+  language:
+    description: "Choose the scripting language to use for updating the repository"
+    default: "javascript"
+  git_access_token:
+    description: "Git access token for authentication"
+    required: true
+  git_repo_name:
+    description: "Repository to sync"
+    required: true
+  git_branch:
+    description: "Branch to sync"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      if: ${{ inputs.language == 'javascript' }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: 'latest'
+
+    - name: Setup Python
+      if: ${{ inputs.language == 'python' }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.x'
+
+    - name: Run Git Repository Updater Script via JavaScript
+      if: ${{ inputs.language == 'javascript' }}
+      env:
+        git_access_token: ${{ inputs.git_access_token }}
+        git_repo_name: ${{ inputs.git_repo_name }}
+        git_branch: ${{ inputs.git_branch }}
+      shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+      run: node ${{ github.action_path }}/sync-git-repository.js
+    
+    - name: Run Syn Git Repository Script via Python
+      if: ${{ inputs.language == 'python' }}
+      env:
+        git_access_token: ${{ inputs.git_access_token }}
+        git_repo_name: ${{ inputs.git_repo_name }}
+        git_branch: ${{ inputs.git_branch }}
+      shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+      run: python ${{ github.action_path }}/sync_git_repository.py
