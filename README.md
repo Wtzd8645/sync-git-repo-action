@@ -1,8 +1,10 @@
 # sync-git-repository-action    
-Designed for synchronizing Git repositories. Implemented with scripting languages to support cross-platform compatibility.
+Designed for synchronizing Git repositories. Implemented with JavaScript to support cross-platform.
+
+### Requirements
+The action requires Git to be installed and accessible from the command line.
 
 ### Inputs
-- **language (Optional)**: Specifies the scripting language to use for sync the repository. Options are "javascript" or "python". Default is "javascript".  
 - **git_access_token (Optional)**: Git access token for authentication.  
 - **git_repo_name (Required)**: The repository to sync.  
 - **git_branch (Required)**: The branch to sync.  
@@ -19,7 +21,7 @@ jobs:
         uses: Wtzd8645/sync-git-repository-action@master
         with:
           git_access_token: ${{ secrets.YOUR_ACCESS_TOKEN }}
-          git_repo_name: "your-repository-name"
-          git_branch: "your-branch-name"
+          git_repo_name: your-repository-name
+          git_branch: your-branch-name
           enable_git_lfs: true
 ```
