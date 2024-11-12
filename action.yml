@@ -1,5 +1,5 @@
 name: "Sync Git Repository Action"
-description: "Sync a Git repository using script"
+description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
 
 inputs:

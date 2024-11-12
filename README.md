@@ -1,5 +1,4 @@
-# sync-git-repository-action    
-Designed for synchronizing Git repositories. Implemented with JavaScript to support cross-platform.
+# sync-git-repository-action
 
 ### Requirements
 The action requires Git to be installed and accessible from the command line.
