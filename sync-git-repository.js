@@ -3,18 +3,18 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 function syncGitRepository() {
-  const gitAccessToken = process.env.git_access_token;
-  const gitRepoName = process.env.git_repo_name;
-  const gitBranch = process.env.git_branch;
-  const enableGitLfs = process.env.enable_git_lfs === 'true';
-  const repoUrl = gitAccessToken
-    ? `https://${gitAccessToken}@github.com/${gitRepoName}.git`
-    : `https://github.com/${gitRepoName}.git`;
+  const accessToken = process.env.access_token;
+  const repoName = process.env.repo_name;
+  const branchName = process.env.branch_name;
+  const useGitLfs = process.env.use_lfs === 'true';
+  const repoUrl = accessToken
+    ? `https://${accessToken}@github.com/${repoName}.git`
+    : `https://github.com/${repoName}.git`;
 
-  console.log(`Sync Git repository. Name: ${gitRepoName}, Branch: ${gitBranch}`);
+  console.log(`Sync Git repository. Repository: ${repoName}, Branch: ${branchName}`);
   if (!existsSync(join(process.cwd(), '.git'))) {
     console.log("Cloning repository.");
-    execCommand(`git clone --branch "${gitBranch}" --single-branch "${repoUrl}" .`);
+    execCommand(`git clone --branch "${branchName}" --single-branch "${repoUrl}" .`);
   } else {
     console.log("Cleaning working directory.");
     execCommand("git clean -fd");
@@ -25,17 +25,17 @@ function syncGitRepository() {
 
     try {
       console.log("Checking out the branch.");
-      execCommand(`git checkout "${gitBranch}"`);
+      execCommand(`git checkout "${branchName}"`);
 
       console.log("Syncing with remote branch.");
-      execCommand(`git reset --hard "origin/${gitBranch}"`);
+      execCommand(`git reset --hard "origin/${branchName}"`);
     } catch {
       console.log("Creating new tracking branch.");
-      execCommand(`git checkout --track "origin/${gitBranch}"`);
+      execCommand(`git checkout --track "origin/${branchName}"`);
     }
   }
 
-  if (enableGitLfs) {
+  if (useGitLfs) {
     console.log("Syncing LFS files.");
     execCommand("git lfs install");
     execCommand("git lfs pull");

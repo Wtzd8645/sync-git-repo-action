@@ -3,32 +3,31 @@ description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
 
 inputs:
-  git_access_token:
+  access_token:
     description: "Git Access Token for Authentication"
-    required: true
-  git_repo_name:
+  repo_name:
     description: "Repository Name"
-    required: true
-  git_branch:
+    default: ${{ github.repository }}
+  branch_name:
     description: "Branch Name"
-    required: true
-  enable_git_lfs:
-    description: Is enable Git LFS
+    default: ${{ github.ref_name }}
+  use_lfs:
+    description: "Use Git LFS for large file support"
     default: "false"
 
 runs:
   using: "composite"
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 'latest'
 
     - name: Sync Git Repository
       env:
-        git_access_token: ${{ inputs.git_access_token }}
-        git_repo_name: ${{ inputs.git_repo_name }}
-        git_branch: ${{ inputs.git_branch }}
-        enable_git_lfs: ${{ inputs.enable_git_lfs }}
+        access_token: ${{ inputs.access_token }}
+        repo_name: ${{ inputs.repo_name }}
+        branch_name: ${{ inputs.branch_name }}
+        use_lfs: ${{ inputs.use_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: node ${{ github.action_path }}/sync-git-repository.js

@@ -4,10 +4,10 @@
 The action requires Git to be installed and accessible from the command line.
 
 ### Inputs
-- **git_access_token (Optional)**: Git access token for authentication.  
-- **git_repo_name (Required)**: The repository to sync.  
-- **git_branch (Required)**: The branch to sync.  
-- **enable_git_lfs (Optional)**: Is enable Git LFS. Options are "true" or "false". Default is "false".
+- **access_token (Optional)**: Git access token for authentication.  
+- **repo_name (Optional)**: The repository to sync. Defaults to the current repository.
+- **branch_name (Optional)**: The branch to sync. Defaults to the current branch.
+- **use_lfs (Optional)**: Enable Git LFS for large file support. Accepts "true" or "false". Default is "false".
 
 ### Usage 
 Here’s how to use this action in a GitHub workflow:  
@@ -19,8 +19,6 @@ jobs:
       - name: Sync Git Repository
         uses: Wtzd8645/sync-git-repository-action@master
         with:
-          git_access_token: ${{ secrets.YOUR_ACCESS_TOKEN }}
-          git_repo_name: your-repository-name
-          git_branch: your-branch-name
+          access_token: ${{ secrets.YOUR_ACCESS_TOKEN }}
           enable_git_lfs: true
 ```
