@@ -1,7 +1,9 @@
 # sync-git-repository-action
+Used for synchronizing a Git repository. Supports cross-platform.  
+This action checks the status of the local Git repository and determines the appropriate steps to update it to match the latest status of the remote repository.
 
 ### Requirements
-The action requires Git to be installed and accessible from the command line.
+- **Git**: Git must be installed and accessible from the command line.
 
 ### Inputs
 - **access_token (Optional)**: Git access token for authentication.  
@@ -9,16 +11,11 @@ The action requires Git to be installed and accessible from the command line.
 - **branch_name (Optional)**: The branch to sync. Defaults to the current branch.
 - **use_lfs (Optional)**: Enable Git LFS for large file support. Accepts "true" or "false". Default is "false".
 
-### Usage 
-Here’s how to use this action in a GitHub workflow:  
+### Usage
 ```yaml
-jobs:
-  sync-repo:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Sync Git Repository
-        uses: Wtzd8645/sync-git-repository-action@master
-        with:
-          access_token: ${{ secrets.YOUR_ACCESS_TOKEN }}
-          enable_git_lfs: true
+- name: Sync Git Repository
+  uses: Wtzd8645/sync-git-repository-action@v1
+  with:
+    access_token: ${{ secrets.YOUR_ACCESS_TOKEN }}
+    use_lfs: true
 ```
