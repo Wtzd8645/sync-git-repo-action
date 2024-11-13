@@ -25,7 +25,7 @@ function syncGitRepository() {
 
     try {
       console.log("Checking out the branch.");
-      execCommand(`git checkout "${branchName}"`);
+      execSync(`git checkout "${branchName}"`);
 
       console.log("Syncing with remote branch.");
       execCommand(`git reset --hard "origin/${branchName}"`);
