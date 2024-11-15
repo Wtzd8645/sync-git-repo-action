@@ -4,6 +4,7 @@ This action checks the status of the local Git repository and determines the app
 
 ### Requirements
 - **Git**: Git must be installed and accessible from the command line.
+- **Git-LFS**: If use_lfs is enabled, Git Large File Storage (LFS) must be installed.
 
 ### Inputs
 - **access_token (Optional)**: Git access token for authentication.  
