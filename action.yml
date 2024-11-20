@@ -30,4 +30,4 @@ runs:
         branch_name: ${{ inputs.branch_name }}
         use_lfs: ${{ inputs.use_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
-      run: node ${{ github.action_path }}/sync-git-repository.js
+      run: node ${{ github.action_path }}/sync-git-repo.js

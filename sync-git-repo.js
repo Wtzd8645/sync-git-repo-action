@@ -2,7 +2,9 @@ import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-function syncGitRepository() {
+syncGitRepo();
+
+function syncGitRepo() {
   const accessToken = process.env.access_token;
   const repoName = process.env.repo_name;
   const branchName = process.env.branch_name;
@@ -50,5 +52,3 @@ function execCommand(command) {
     process.exit(1);
   }
 }
-
-syncGitRepository();
