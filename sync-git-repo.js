@@ -3,7 +3,7 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 try {
-  syncGitRepo();    
+  syncGitRepo();
 } catch (error) {
   console.error(error.message);
   process.exit(1);
@@ -28,18 +28,18 @@ function syncGitRepo() {
     execCmd("git reset --hard");
 
     console.log("Fetching latest changes from remote.");
-    execCmd(`git fetch --prune "${url}" "refs/heads/*:refs/remotes/origin/*" -f`);
+    execCmd(`git fetch --prune "${url}" "refs/heads/${branch}:refs/remotes/origin/${branch}" -f`);
 
     try {
       console.log("Checking out the branch.");
-      execSync(`git checkout "${branch}"`);
-
-      console.log("Syncing with remote branch.");
-      execCmd(`git reset --hard "origin/${branch}"`);
+      execCmd(`git checkout "${branch}"`);
     } catch {
       console.log("Creating new tracking branch.");
       execCmd(`git checkout --track "origin/${branch}"`);
     }
+
+    console.log("Syncing with remote branch.");
+    execCmd(`git reset --hard "origin/${branch}"`);
   }
 
   if (useLfs) {
