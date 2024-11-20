@@ -3,14 +3,20 @@ description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
 
 inputs:
+  git_server:
+    description: "The Git server to sync. Defaults to github.com."
+    default: "github.com"
+  use_ssh:
+    description: "Use SSH for Git authentication. Defaults to false."
+    default: "false"
   personal_access_token:
-    description: "Personal Access Token (PAT) for Git authentication. Defaults to the GITHUB_TOKEN."
+    description: "Personal Access Token (PAT) for Git authentication. Defaults to github.token."
     default: ${{ github.token }}
   repository:
-    description: "The repository to sync. Defaults to the current repository."
+    description: "The repository to sync. Defaults to github.repository."
     default: ${{ github.repository }}
   branch:
-    description: "The branch to sync. Defaults to the current branch."
+    description: "The branch to sync. Defaults to github.ref_name"
     default: ${{ github.ref_name }}
   use_lfs:
     description: "Use Git LFS for large file support. Defaults to false."
@@ -26,6 +32,8 @@ runs:
 
     - name: Synchronize Git Repository
       env:
+        git_server: ${{ inputs.git_server }}
+        use_ssh: ${{ inputs.use_ssh }}
         personal_access_token: ${{ inputs.personal_access_token }}
         repository: ${{ inputs.repository }}
         branch: ${{ inputs.branch }}

@@ -7,9 +7,11 @@ This action checks the status of the local Git repository and determines the app
 - **Git-LFS**: If use_lfs is enabled, Git Large File Storage (LFS) must be installed.
 
 ### Inputs
-- **personal_access_token (Optional)**: Personal Access Token (PAT) for Git authentication. Defaults to the GITHUB_TOKEN.  
-- **repository (Optional)**: The repository to sync. Defaults to the current repository.
-- **branch (Optional)**: The branch to sync. Defaults to the current branch.
+- **git_server (Optional)**: The Git server to sync. Defaults to github.com.
+- **use_ssh (Optional)**: Use SSH for Git authentication. Defaults to false.
+- **personal_access_token (Optional)**: Personal Access Token (PAT) for Git authentication. Defaults to github.token.
+- **repository (Optional)**: The repository to sync. Defaults to github.repository.
+- **branch (Optional)**: The branch to sync. Defaults to github.ref_name.
 - **use_lfs (Optional)**: Enable Git LFS for large file support. Defaults to false.
 
 ### Usage

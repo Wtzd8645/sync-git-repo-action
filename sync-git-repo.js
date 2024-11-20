@@ -10,25 +10,23 @@ try {
 }
 
 function syncGitRepo() {
-  const pat = process.env.personal_access_token;
+  const gitServer = process.env.git_server || 'github.com';
   const repository = process.env.repository;
   const branch = process.env.branch;
-  const useLfs = process.env.use_lfs === 'true';
-  const url = pat
-    ? `https://${pat}@github.com/${repository}.git`
-    : `https://github.com/${repository}.git`;
-
-  console.log(`Sync Git repository. Repository: ${repository}, Branch: ${branch}`);
+  const useLfs = process.env.use_lfs === 'true';  
+  
+  const gitUrl = getGitUrl(gitServer, repository);
+  console.log(`Sync Git repository. Server: ${gitServer}, Repository: ${repository}, Branch: ${branch}`);
   if (!existsSync(join(process.cwd(), '.git'))) {
     console.log("Cloning repository.");
-    execCmd(`git clone --branch "${branch}" --single-branch "${url}" .`);
+    execCmd(`git clone --branch "${branch}" --single-branch "${gitUrl}" .`);
   } else {
     console.log("Cleaning working directory.");
     execCmd("git clean -fd");
     execCmd("git reset --hard");
 
     console.log("Fetching latest changes from remote.");
-    execCmd(`git fetch --prune "${url}" "refs/heads/${branch}:refs/remotes/origin/${branch}" -f`);
+    execCmd(`git fetch --prune "${gitUrl}" "refs/heads/${branch}:refs/remotes/origin/${branch}" -f`);
 
     try {
       console.log("Checking out the branch.");
@@ -57,6 +55,19 @@ function syncGitRepo() {
     console.log("Syncing LFS files.");
     execCmd("git lfs pull");
     execCmd("git submodule foreach --recursive git lfs pull");
+  }
+}
+
+function getGitUrl(gitServer, repository) {
+  const useSsh = process.env.use_ssh === 'true';
+  const pat = process.env.personal_access_token;  
+
+  if (useSsh) {
+    return `git@${gitServer}:${repository}.git`;
+  } else if (pat) {
+    return `https://${pat}@${gitServer}/${repository}.git`;
+  } else {
+    return `https://${gitServer}/${repository}.git`;
   }
 }
 
