@@ -1,18 +1,19 @@
-name: "Sync Git Repository Action"
+name: "Sync Git Repo Action"
 description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
 
 inputs:
-  access_token:
-    description: "Git Access Token for Authentication"
-  repo_name:
-    description: "Repository Name"
+  personal_access_token:
+    description: "Personal Access Token (PAT) for Git authentication. Defaults to the GITHUB_TOKEN."
+    default: ${{ secrets.GITHUB_TOKEN }}
+  repository:
+    description: "The repository to sync. Defaults to the current repository."
     default: ${{ github.repository }}
-  branch_name:
-    description: "Branch Name"
+  branch:
+    description: "The branch to sync. Defaults to the current branch."
     default: ${{ github.ref_name }}
   use_lfs:
-    description: "Use Git LFS for large file support"
+    description: "Use Git LFS for large file support. Defaults to false."
     default: "false"
 
 runs:
@@ -23,11 +24,11 @@ runs:
       with:
         node-version: 'latest'
 
-    - name: Sync Git Repository
+    - name: Synchronize Git Repository
       env:
-        access_token: ${{ inputs.access_token }}
-        repo_name: ${{ inputs.repo_name }}
-        branch_name: ${{ inputs.branch_name }}
+        personal_access_token: ${{ inputs.personal_access_token }}
+        repository: ${{ inputs.repository }}
+        branch: ${{ inputs.branch }}
         use_lfs: ${{ inputs.use_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: node ${{ github.action_path }}/sync-git-repo.js

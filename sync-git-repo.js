@@ -2,53 +2,53 @@ import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-syncGitRepo();
+try {
+  syncGitRepo();    
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
 
 function syncGitRepo() {
-  const accessToken = process.env.access_token;
-  const repoName = process.env.repo_name;
-  const branchName = process.env.branch_name;
-  const useGitLfs = process.env.use_lfs === 'true';
-  const repoUrl = accessToken
-    ? `https://${accessToken}@github.com/${repoName}.git`
-    : `https://github.com/${repoName}.git`;
+  const pat = process.env.personal_access_token;
+  const repository = process.env.repository;
+  const branch = process.env.branch;
+  const useLfs = process.env.use_lfs === 'true';
+  const url = pat
+    ? `https://${pat}@github.com/${repository}.git`
+    : `https://github.com/${repository}.git`;
 
-  console.log(`Sync Git repository. Repository: ${repoName}, Branch: ${branchName}`);
+  console.log(`Sync Git repository. Repository: ${repository}, Branch: ${branch}`);
   if (!existsSync(join(process.cwd(), '.git'))) {
     console.log("Cloning repository.");
-    execCommand(`git clone --branch "${branchName}" --single-branch "${repoUrl}" .`);
+    execCmd(`git clone --branch "${branch}" --single-branch "${url}" .`);
   } else {
     console.log("Cleaning working directory.");
-    execCommand("git clean -fd");
-    execCommand("git reset --hard");
+    execCmd("git clean -fd");
+    execCmd("git reset --hard");
 
     console.log("Fetching latest changes from remote.");
-    execCommand(`git fetch --prune "${repoUrl}" "refs/heads/*:refs/remotes/origin/*" -f`);
+    execCmd(`git fetch --prune "${url}" "refs/heads/*:refs/remotes/origin/*" -f`);
 
     try {
       console.log("Checking out the branch.");
-      execSync(`git checkout "${branchName}"`);
+      execSync(`git checkout "${branch}"`);
 
       console.log("Syncing with remote branch.");
-      execCommand(`git reset --hard "origin/${branchName}"`);
+      execCmd(`git reset --hard "origin/${branch}"`);
     } catch {
       console.log("Creating new tracking branch.");
-      execCommand(`git checkout --track "origin/${branchName}"`);
+      execCmd(`git checkout --track "origin/${branch}"`);
     }
   }
 
-  if (useGitLfs) {
+  if (useLfs) {
     console.log("Syncing LFS files.");
-    execCommand("git lfs install");
-    execCommand("git lfs pull");
+    execCmd("git lfs install");
+    execCmd("git lfs pull");
   }
 }
 
-function execCommand(command) {
-  try {
-    execSync(command, { stdio: 'inherit' });
-  } catch (error) {
-    console.error(error.message);
-    process.exit(1);
-  }
+function execCmd(cmd) {
+  execSync(cmd, { stdio: 'inherit' });
 }
