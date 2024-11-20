@@ -42,10 +42,21 @@ function syncGitRepo() {
     execCmd(`git reset --hard "origin/${branch}"`);
   }
 
+  console.log("Cleaning submodules.");
+  execCmd("git submodule foreach --recursive git clean -fd");
+  execCmd("git submodule foreach --recursive git reset --hard");
+
+  console.log("Updating submodules.");
+  execCmd("git submodule sync");
+  execCmd("git submodule update --init --recursive");
+
   if (useLfs) {
-    console.log("Syncing LFS files.");
+    console.log("Ensuring LFS is installed.");
     execCmd("git lfs install");
+
+    console.log("Syncing LFS files.");
     execCmd("git lfs pull");
+    execCmd("git submodule foreach --recursive git lfs pull");
   }
 }
 
