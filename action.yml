@@ -18,6 +18,9 @@ inputs:
   branch:
     description: "The branch to sync. Defaults to github.ref_name"
     default: ${{ github.ref_name }}
+  deep_clean:
+    description: "If true, uses the --ffdx flag to remove all untracked and ignored files; otherwise, uses -ffd to remove only untracked files. Defaults to false."
+    default: "false"
   use_lfs:
     description: "Use Git LFS for large file support. Defaults to false."
     default: "false"

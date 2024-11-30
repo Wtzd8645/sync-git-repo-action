@@ -2,19 +2,13 @@ import { execSync } from 'child_process';
 import { existsSync } from 'fs';
 import { join } from 'path';
 
-try {
-  syncGitRepo();
-} catch (error) {
-  console.error(error.message);
-  process.exit(1);
-}
+const gitServer = process.env.git_server || 'github.com';
+const repository = process.env.repository;
+const branch = process.env.branch;
+const cleanArgs = process.env.deep_clean === 'true' ? '-ffdx' : '-ffd';
+const useLfs = process.env.use_lfs === 'true';
 
-function syncGitRepo() {
-  const gitServer = process.env.git_server || 'github.com';
-  const repository = process.env.repository;
-  const branch = process.env.branch;
-  const useLfs = process.env.use_lfs === 'true';  
-  
+try {
   const gitUrl = getGitUrl(gitServer, repository);
   console.log(`Sync Git repository. Server: ${gitServer}, Repository: ${repository}, Branch: ${branch}`);
   if (!existsSync(join(process.cwd(), '.git'))) {
@@ -22,7 +16,7 @@ function syncGitRepo() {
     execCmd(`git clone --branch "${branch}" --single-branch "${gitUrl}" .`);
   } else {
     console.log("Cleaning working directory.");
-    execCmd("git clean -fd");
+    execCmd(`git clean ${cleanArgs}`);
     execCmd("git reset --hard");
 
     console.log("Fetching latest changes from remote.");
@@ -41,7 +35,7 @@ function syncGitRepo() {
   }
 
   console.log("Cleaning submodules.");
-  execCmd("git submodule foreach --recursive git clean -fd");
+  execCmd(`git submodule foreach --recursive git clean ${cleanArgs}`);
   execCmd("git submodule foreach --recursive git reset --hard");
 
   console.log("Updating submodules.");
@@ -56,11 +50,14 @@ function syncGitRepo() {
     execCmd("git lfs pull");
     execCmd("git submodule foreach --recursive git lfs pull");
   }
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
 }
 
 function getGitUrl(gitServer, repository) {
   const useSsh = process.env.use_ssh === 'true';
-  const pat = process.env.personal_access_token;  
+  const pat = process.env.personal_access_token;
 
   if (useSsh) {
     return `git@${gitServer}:${repository}.git`;

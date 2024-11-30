@@ -12,6 +12,7 @@ This action checks the status of the local Git repository and determines the app
 - **personal_access_token (Optional)**: Personal Access Token (PAT) for Git authentication. Defaults to github.token.
 - **repository (Optional)**: The repository to sync. Defaults to github.repository.
 - **branch (Optional)**: The branch to sync. Defaults to github.ref_name.
+- **deep_clean (Optional)**: If true, uses the --ffdx flag to remove all untracked and ignored files; otherwise, uses -ffd to remove only untracked files. Defaults to false.
 - **use_lfs (Optional)**: Enable Git LFS for large file support. Defaults to false.
 
 ### Usage
