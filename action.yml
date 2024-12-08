@@ -3,6 +3,9 @@ description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
 
 inputs:
+  repository_path:
+    description: "The path to the repository to sync. Defaults to the current workspace."
+    default: ${{ github.workspace }}
   git_server:
     description: "The Git server to sync. Defaults to github.com."
     default: "github.com"
@@ -15,8 +18,8 @@ inputs:
   repository:
     description: "The repository to sync. Defaults to github.repository."
     default: ${{ github.repository }}
-  branch:
-    description: "The branch to sync. Defaults to github.ref_name"
+  ref_name:
+    description: "The branch or tag to sync. Defaults to github.ref_name"
     default: ${{ github.ref_name }}
   deep_clean:
     description: "If true, uses the --ffdx flag to remove all untracked and ignored files; otherwise, uses -ffd to remove only untracked files. Defaults to false."
@@ -31,15 +34,17 @@ runs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 'latest'
+        node-version: 'lts/*'
 
     - name: Synchronize Git Repository
       env:
+        repository_path : ${{ inputs.repository_path }}
         git_server: ${{ inputs.git_server }}
         use_ssh: ${{ inputs.use_ssh }}
         personal_access_token: ${{ inputs.personal_access_token }}
         repository: ${{ inputs.repository }}
-        branch: ${{ inputs.branch }}
+        ref_name: ${{ inputs.ref_name }}
+        deep_clean: ${{ inputs.deep_clean }}
         use_lfs: ${{ inputs.use_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
       run: node ${{ github.action_path }}/sync-git-repo.js
