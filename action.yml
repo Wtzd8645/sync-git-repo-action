@@ -1,7 +1,6 @@
 name: "Sync Git Repo Action"
 description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
-
 inputs:
   repository_path:
     description: "The path to the repository to sync. Defaults to the current workspace."
@@ -27,7 +26,6 @@ inputs:
   use_lfs:
     description: "Use Git LFS for large file support. Defaults to false."
     default: "false"
-
 runs:
   using: "composite"
   steps:
@@ -35,7 +33,6 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 'lts/*'
-
     - name: Synchronize Git Repository
       env:
         repository_path : ${{ inputs.repository_path }}
@@ -47,4 +44,5 @@ runs:
         deep_clean: ${{ inputs.deep_clean }}
         use_lfs: ${{ inputs.use_lfs }}
       shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
-      run: node ${{ github.action_path }}/sync-git-repo.js
+      working-directory: ${{ github.action_path }}
+      run: npm run start
