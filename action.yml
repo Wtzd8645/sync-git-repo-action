@@ -2,8 +2,8 @@ name: "Sync Git Repo Action"
 description: "Used for synchronizing a Git repository. Supports cross-platform."
 author: "Neo Chen"
 inputs:
-  repository_path:
-    description: "The path to the repository to sync. Defaults to the current workspace."
+  repo_path:
+    description: "The path to the repository to sync. Defaults to github.workspace."
     default: ${{ github.workspace }}
   git_server:
     description: "The Git server to sync. Defaults to github.com."
@@ -12,9 +12,9 @@ inputs:
     description: "Use SSH for Git authentication. Defaults to false."
     default: "false"
   personal_access_token:
-    description: "Personal Access Token (PAT) for Git authentication. Defaults to github.token."
-    default: ${{ github.token }}
-  repository:
+    description: "Personal Access Token (PAT) for Git authentication. Defaults to github.actor:github.token."
+    default: ${{ github.actor }}:${{ github.token }}
+  repo_name:
     description: "The repository to sync. Defaults to github.repository."
     default: ${{ github.repository }}
   ref_name:
@@ -35,11 +35,11 @@ runs:
         node-version: 'lts/*'
     - name: Synchronize Git Repository
       env:
-        repository_path : ${{ inputs.repository_path }}
+        repo_path : ${{ inputs.repo_path }}
         git_server: ${{ inputs.git_server }}
         use_ssh: ${{ inputs.use_ssh }}
         personal_access_token: ${{ inputs.personal_access_token }}
-        repository: ${{ inputs.repository }}
+        repo_name: ${{ inputs.repo_name }}
         ref_name: ${{ inputs.ref_name }}
         deep_clean: ${{ inputs.deep_clean }}
         use_lfs: ${{ inputs.use_lfs }}

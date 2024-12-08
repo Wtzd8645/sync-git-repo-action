@@ -3,19 +3,19 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 function main() {
-  const repositoryPath = process.env.repository_path;
+  const repoPath = process.env.repo_path;
   const gitServer = process.env.git_server || 'github.com';
-  const repository = process.env.repository;
   const useSsh = process.env.use_ssh === 'true';
   const pat = process.env.personal_access_token;
+  const repoName = process.env.repo_name;
   const refName = process.env.ref_name;
-  const cleanArgs = process.env.deep_clean === 'true' ? '-ffdx' : '-ffd';
+  const cleanArg = process.env.deep_clean === 'true' ? '-ffdx' : '-ffd';
   const useLfs = process.env.use_lfs === 'true';
 
   try {
-    repositoryPath && process.chdir(repositoryPath);
+    repoPath && process.chdir(repoPath);
 
-    const gitUrl = getGitUrl(gitServer, repository, useSsh, pat);
+    const gitUrl = getGitUrl(gitServer, repoName, useSsh, pat);
     if (!existsSync(join(process.cwd(), '.git'))) {
       console.log("Cloning repository.");
       execCmd(`git clone --no-tags --single-branch "${gitUrl}" .`);
@@ -26,7 +26,7 @@ function main() {
     execCmd(`git fetch -f --prune --prune-tags "${gitUrl}" "${getFetchRefSpec(isTagRef, refName)}"`);
 
     console.log("Cleaning working directory.");
-    execCmd(`git clean ${cleanArgs}`);
+    execCmd(`git clean ${cleanArg}`);
 
     console.log("Checking out the branch.");
     execCmd(`git switch -f ${isTagRef ? '--detach ' : ''}"${refName}"`);
@@ -35,7 +35,7 @@ function main() {
     execCmd(`git reset --hard "${getResetPathSpec(isTagRef, refName)}"`);
 
     console.log("Cleaning submodules.");
-    execCmd(`git submodule foreach --recursive git clean ${cleanArgs}`);
+    execCmd(`git submodule foreach --recursive git clean ${cleanArg}`);
     execCmd("git submodule foreach --recursive git reset --hard");
 
     console.log("Updating submodules.");
