@@ -3,14 +3,14 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 
 function main() {
-  const repoPath = process.env.repo_path;
-  const gitServer = process.env.git_server || 'github.com';
-  const useSsh = process.env.use_ssh === 'true';
-  const pat = process.env.personal_access_token;
-  const repoName = process.env.repo_name;
-  const refName = process.env.ref_name;
-  const cleanArg = process.env.deep_clean === 'true' ? '-ffdx' : '-ffd';
-  const useLfs = process.env.use_lfs === 'true';
+  const repoPath: string = process.env.repo_path ?? '';
+  const gitServer: string = process.env.git_server ?? 'github.com';
+  const useSsh: boolean = process.env.use_ssh === 'true';
+  const pat: string = process.env.personal_access_token ?? '';
+  const repoName: string = process.env.repo_name ?? '';
+  const refName: string = process.env.ref_name || 'main';
+  const cleanArg: string = process.env.deep_clean === 'true' ? '-ffdx' : '-ffd';
+  const useLfs: boolean = process.env.use_lfs === 'true';
 
   try {
     repoPath && process.chdir(repoPath);
@@ -51,12 +51,16 @@ function main() {
       execCmd("git submodule foreach --recursive git lfs pull");
     }
   } catch (error) {
-    console.error(error.message);
+    if (error instanceof Error) {
+      console.error(`Error: ${error.message}`);
+    } else {
+      console.error(`Unknown error: ${JSON.stringify(error)}`);
+    }
     process.exit(1);
   }
 }
 
-function getGitUrl(gitServer, repository, useSsh, pat) {
+function getGitUrl(gitServer: string, repository: string, useSsh: boolean, pat: string) {
   if (useSsh) {
     return `git@${gitServer}:${repository}.git`;
   } else if (pat) {
@@ -66,19 +70,19 @@ function getGitUrl(gitServer, repository, useSsh, pat) {
   }
 }
 
-function getFetchRefSpec(isTag, refName) {
+function getFetchRefSpec(isTag: boolean, refName: string) {
   return isTag ? `refs/tags/${refName}:refs/tags/${refName}` : `refs/heads/${refName}:refs/remotes/origin/${refName}`;
 }
 
-function getResetPathSpec(isTag, refName) {
+function getResetPathSpec(isTag: boolean, refName: string) {
   return isTag ? refName : `origin/${refName}`;
 }
 
-function execCmd(cmd) {
+function execCmd(cmd: string) {
   execSync(cmd, { stdio: 'inherit' });
 }
 
-function execCmdAndCapture(cmd) {
+function execCmdAndCapture(cmd: string) {
   return execSync(cmd, { encoding: 'utf8', stdio: 'pipe' });
 }
 

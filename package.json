@@ -1,6 +1,6 @@
 {
   "name": "sync-git-repo-action",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Used for synchronizing a Git repository.",
   "author": "Neo Chen",
   "license": "MIT",
@@ -10,9 +10,14 @@
     "cicd",
     "git"
   ],
-  "type": "module",
-  "main": "index.js",
+  "type": "commonjs",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node dist/index.js",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "latest",
+    "typescript": "latest"
   }
 }
